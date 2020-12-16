@@ -65,7 +65,7 @@ for line in stores:
 
 
 jsonline = json.dumps(store_totals)
-f = open(Path("test.json"),"w")
+f = open(Path("./stored/" + date_index[2] + "_" + date_index[0] + ".json"),"w")
 f.write(jsonline)
 f.close()
 

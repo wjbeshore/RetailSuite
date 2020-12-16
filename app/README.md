@@ -1,0 +1,1 @@
+Site that will display current donation trends of all major retail brands. Using HTML, JS, and CSS for the site, data is handled in MySQL database. Backend is node.js pulling data from MySQL server to display with D3.js on site. In future will be implementing method to upload data to be added to database with incorporation of Python for data clearning.

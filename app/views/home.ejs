@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+
+<head>
+	<meta charset="utf-8">
+	<title>Donation Stats App</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+	<link rel="stylesheet" type="text/css" href="style.css"/>
+
+</head>
+
+<body>
+<div class="header">
+<h1>Retail Banners</h1>
+<h4>Select banner to see list of stores.</h4>
+</div>
+
+<div class="container">
+
+<ul>
+		<% renderList.forEach(element =>{ %> 
+
+			<li><a href="banner/<%=  element.banner %>"><%=  element.banner %></a></li>
+			<hr/>
+		<% }); %>
+</ul>
+
+</div>
+
+</body>
+
+</html>
