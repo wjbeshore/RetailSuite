@@ -1,81 +1,62 @@
-# import csv
-# import simplejson as json
-# from pathlib import Path
-# import datetime
-
-
-import pymongo
-import os
-
-client = pymongo.MongoClient('mongodb+srv://will:xo52eg15@cluster0.vlxnz.mongodb.net/retail?retryWrites=true&w=majority')
-db = client.gettingStarted
-people = db.people
-
+import csv
+from pathlib import Path
 import datetime
-personDocument = {
-  "name": { "first": "Alan", "last": "Turing" },
-  "birth": datetime.datetime(1912, 6, 23),
-  "death": datetime.datetime(1954, 6, 7),
-  "contribs": [ "Turing machine", "Turing test", "Turingery" ],
-  "views": 1250000
-}
-
-people.insert_one(personDocument)
 
 
 
 
-# file_name = input("File name?")
+file_name = input("File name?")
 
-# file = open(file_name)
-# reader = csv.reader(file)
-# result = [[item for item in row if item != ''] for row in reader]
+file = open(file_name)
+reader = csv.reader(file)
+result = [[item for item in row if item != ''] for row in reader]
 
-# stores = {}
-# result = result[11:]
-# result = result[:-3]
-
-
-# date_index = result[1][5].split("/")
-# date = date_index[2] + "-" + date_index[0] + "-01"
-# x = datetime.datetime(int(date_index[2]), int(date_index[0]), 1)
-# print(x)
+stores = {}
+result = result[11:]
+result = result[:-3]
 
 
-# current_store = ""
-# for row in result:
-#     if row[0] == "Donor Total":
-#         current_store = ""
-#     elif (row[1].isdigit() == False) and (row[1] != "RETAIL"):
-#         current_store = int(row[0])
-#         stores[current_store] = []
+date_index = result[1][5].split("/")
+date = date_index[2] + "-" + date_index[0] + "-01"
+x = datetime.datetime(int(date_index[2]), int(date_index[0]), 1)
+print(x)
+
+
+current_store = ""
+for row in result:
+    if row[0] == "Donor Total":
+        current_store = ""
+    elif (row[1].isdigit() == False) and (row[1] != "RETAIL"):
+        current_store = int(row[0])
+        stores[current_store] = []
     
-#     else:
-#         if row[8] == '12/31/9999':
-#             pounds = row[9].replace(",", "")
-#             pounds = pounds[:-1]
-#             stores[current_store].append([row[5], row[2], row[4], float(pounds)])
-#         else:
-#             pounds = row[8].replace(",", "")
-#             pounds = pounds[:-1]
-#             stores[current_store].append([row[5], row[2], row[4], float(pounds)])
-
+    else:
+        if row[8] == '12/31/9999':
+            pounds = row[9].replace(",", "")
+            pounds = pounds[:-1]
+            stores[current_store].append([row[5], row[2], row[4], float(pounds)])
+        else:
+            pounds = row[8].replace(",", "")
+            pounds = pounds[:-1]
+            stores[current_store].append([row[5], row[2], row[4], float(pounds)])
         
-# store_totals = {}
-# for line in stores:
-#     key = int(line)
-#     store_totals[key] = {}
-#     for item in stores[key]:
-#         category = item[1]
+store_totals = {}
+for line in stores:
+    key = int(line)
+    store_totals[key] = {
+    "date": x.strftime("%m/%Y")
+    }
+    for item in stores[key]:
+        category = item[1]
 
-#         if category not in store_totals[key]:
-#             store_totals[key][category] = item[3]
+        if category not in store_totals[key]:
+            store_totals[key][category] = item[3]
             
-#         else:
-#              store_totals[key][category] += item[3]
+        else:
+             store_totals[key][category] += item[3]
              
-
-# # 66223344: { 'RETAIL, PRODUCE': 21080.0, 'RETAIL, MEAT AND DELI': 2855.0, 'RETAIL, MIX FOOD': 15786.0, 'RETAIL, DAIRY': 390.0}
+print(store_totals)
+# 66223344: { 'RETAIL, PRODUCE': 21080.0, 'RETAIL, MEAT AND DELI': 2855.0, 'RETAIL, MIX FOOD': 15786.0, 'RETAIL, DAIRY': 390.0}
 
 
 
