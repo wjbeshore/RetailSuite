@@ -14,6 +14,10 @@ app.set('view engine', 'ejs');
 
 //Connecting MongoDB to app now.
 
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://will:xo52eg15@cluster0.vlxnz.mongodb.net/retail?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+
 con.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");

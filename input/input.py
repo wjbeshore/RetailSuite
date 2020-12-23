@@ -1,27 +1,36 @@
 import csv
 from pathlib import Path
 import datetime
+import pymongo
+import os
+
+#Connect to MongoDb
+client = pymongo.MongoClient('mongodb+srv://will:xo52eg15@cluster0.vlxnz.mongodb.net/retail?retryWrites=true&w=majority')
+db = client.retail
+storesdb = db.stores
 
 
 
+
+#Takes raw csv file exported from Ceres and converts to array.
 
 file_name = input("File name?")
-
 file = open(file_name)
 reader = csv.reader(file)
 result = [[item for item in row if item != ''] for row in reader]
 
+# Create empty dictionary for stores
 stores = {}
+
+# Uses results from csv file and cleans data. Removes headers, takes date and creats a date time object.
 result = result[11:]
 result = result[:-3]
-
-
 date_index = result[1][5].split("/")
 date = date_index[2] + "-" + date_index[0] + "-01"
 x = datetime.datetime(int(date_index[2]), int(date_index[0]), 1)
-print(x)
+print(date)
 
-
+# Begins parsing cleaned data and storing individual stores with all recorded donations that month.
 current_store = ""
 for row in result:
     if row[0] == "Donor Total":
@@ -39,7 +48,8 @@ for row in result:
             pounds = row[8].replace(",", "")
             pounds = pounds[:-1]
             stores[current_store].append([row[5], row[2], row[4], float(pounds)])
-        
+ 
+# Takes our store with donations lists and creates dictionary with totals from all categories and datetime object in each store. 
 store_totals = {}
 for line in stores:
     key = int(line)
@@ -55,16 +65,17 @@ for line in stores:
         else:
              store_totals[key][category] += item[3]
              
-print(store_totals)
-# 66223344: { 'RETAIL, PRODUCE': 21080.0, 'RETAIL, MEAT AND DELI': 2855.0, 'RETAIL, MIX FOOD': 15786.0, 'RETAIL, DAIRY': 390.0}
+# 4012: {'date': '04/2019', 'RETAIL, MIX FOOD': 284.0}
 
 
 
-
-# jsonline = json.dumps(store_totals)
-# f = open(Path("./stored/" + date_index[2] + "_" + date_index[0] + ".json"),"w")
-# f.write(jsonline)
-# f.close()
+# Runs through dictionary of stores and adds to MongoDB
+for each in store_totals:
+	# print(each)
+	myquery = { "ceres_id": str(each)}
+	temp_date = store_totals[each]["date"]
+	update = {"$set": {"monthly_donation." + temp_date : store_totals[each]}};
+	storesdb.update_one(myquery, update);
 
 
 
