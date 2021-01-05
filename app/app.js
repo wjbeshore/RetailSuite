@@ -35,39 +35,16 @@ monthly_donation:Object}
 	));
 
 var stores = mongoose.model('store');
-temp_store = stores.find({ceres_id: '1608680'}, function(err, data) { console.log(err, data[0].monthly_donation.test); });
-
-
-// mongoose.find().distinct('banner', function(error, ids) {
-//     // ids is an array of all ObjectIds
-//     console.log(ids)
-// });
-
-// app.get('/', (req, res) => {
-	
-// 	con.query('SELECT DISTINCT banner FROM stores', (err,stores) => {
-// 		if(err) throw err;
-
-//   		console.log('Data received from Db:');
-//   		console.log(stores);
-//   		res.render("home", {renderList: stores});
-// 	});
+stores.find().distinct('banner', function(err, data) { console.log(err, data[2])});
 
 
 
-// });
+app.get('/', (req, res) => {
+	stores.find().distinct('banner', function(err, data) { 
 
-// app.get('/', (req, res) => {
-	
-// 	con.query('SELECT DISTINCT banner FROM stores', (err,stores) => {
-// 		if(err) throw err;
-
-//   		console.log('Data received from Db:');
-//   		console.log(stores);
-//   		res.render("home", {renderList: stores});
-// 	});
-
-// });
+		res.render("home", {renderList: data});
+		console.log(err, data[0])}); 		
+	});
 
 
 // app.get('/banner/:id', (req, res) => {
