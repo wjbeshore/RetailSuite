@@ -14,28 +14,17 @@ app.set('view engine', 'ejs');
 
 //Connecting MongoDB to app now.
 
-const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://will:xo52eg15@cluster0.vlxnz.mongodb.net/retail?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true });
 
-con.connect(function(err) {
-  if (err) throw err;
-  console.log("Connected!");
-});
+
+const mongoose = require('mongoose');
+mongoose.connect(uri, {useNewUrlParser: true});
 
 
 
-
-app.get('/', (req, res) => {
-	
-	con.query('SELECT DISTINCT banner FROM stores', (err,stores) => {
-		if(err) throw err;
-
-  		console.log('Data received from Db:');
-  		console.log(stores);
-  		res.render("home", {renderList: stores});
-	});
-
+mongoose.find().distinct('banner', function(error, ids) {
+    // ids is an array of all ObjectIds
+    console.log(ids)
 });
 
 app.get('/', (req, res) => {
@@ -48,52 +37,66 @@ app.get('/', (req, res) => {
   		res.render("home", {renderList: stores});
 	});
 
+
+
 });
 
+// app.get('/', (req, res) => {
+	
+// 	con.query('SELECT DISTINCT banner FROM stores', (err,stores) => {
+// 		if(err) throw err;
 
-app.get('/banner/:id', (req, res) => {
-    let bannerreturn = req.params.id;
-    console.log(bannerreturn)
-    con.query('SELECT street FROM stores WHERE banner = ' + '"' + bannerreturn + '"' , (err,stores) => {
-		if(err) throw err;
+//   		console.log('Data received from Db:');
+//   		console.log(stores);
+//   		res.render("home", {renderList: stores});
+// 	});
 
-  		console.log('Data received from Db:');
-  		console.log(stores);
-  		res.render("stores", {renderList: stores});
-	});    
-});
-
-app.get('/banner/store/:id', (req, res) => {
-    let storereturn = req.params.id;
-    console.log(storereturn)
+// });
 
 
+// app.get('/banner/:id', (req, res) => {
+//     let bannerreturn = req.params.id;
+//     console.log(bannerreturn)
+//     con.query('SELECT street FROM stores WHERE banner = ' + '"' + bannerreturn + '"' , (err,stores) => {
+// 		if(err) throw err;
+
+//   		console.log('Data received from Db:');
+//   		console.log(stores);
+//   		res.render("stores", {renderList: stores});
+// 	});    
+// });
+
+// app.get('/banner/store/:id', (req, res) => {
+//     let storereturn = req.params.id;
+//     console.log(storereturn)
 
 
-    con.query('SELECT * FROM stores s LEFT JOIN donation d ON d.ceres_id = s.ceres_id WHERE s.street = ' + '"' + storereturn + '"' + "ORDER BY d.month DESC LIMIT 12", (err,stores) => {
-		if(err) throw err;
-
-  		console.log('Data received from Db:');
-  		let new_arr = [];
-  		stores.forEach((element) => {
-  			let arrSum = 0;
-  			arrSum += element.mix;
-  			arrSum += element.dairy;
-  			arrSum += element.meat;
-  			arrSum += element.produce;
-  			arrSum += element.nonfood;
-  			// let tempArr = [element.month, arrSum];
-  			new_arr.unshift(arrSum)
 
 
-  		});
-  		console.log(new_arr);
-  		console.log(stores);
-  		res.render("store_stats", {renderList: new_arr, address: storereturn});
-	});
+//     con.query('SELECT * FROM stores s LEFT JOIN donation d ON d.ceres_id = s.ceres_id WHERE s.street = ' + '"' + storereturn + '"' + "ORDER BY d.month DESC LIMIT 12", (err,stores) => {
+// 		if(err) throw err;
+
+//   		console.log('Data received from Db:');
+//   		let new_arr = [];
+//   		stores.forEach((element) => {
+//   			let arrSum = 0;
+//   			arrSum += element.mix;
+//   			arrSum += element.dairy;
+//   			arrSum += element.meat;
+//   			arrSum += element.produce;
+//   			arrSum += element.nonfood;
+//   			// let tempArr = [element.month, arrSum];
+//   			new_arr.unshift(arrSum)
+
+
+//   		});
+//   		console.log(new_arr);
+//   		console.log(stores);
+//   		res.render("store_stats", {renderList: new_arr, address: storereturn});
+// 	});
     
     
-});
+// });
 
 
 
