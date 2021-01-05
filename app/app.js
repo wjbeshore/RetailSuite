@@ -18,28 +18,44 @@ const uri = "mongodb+srv://will:xo52eg15@cluster0.vlxnz.mongodb.net/retail?retry
 
 
 const mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 mongoose.connect(uri, {useNewUrlParser: true});
 
 
 
-mongoose.find().distinct('banner', function(error, ids) {
-    // ids is an array of all ObjectIds
-    console.log(ids)
-});
+mongoose.model('store', new Schema(
+{ceres_id:String,
+banner:String,
+street:String,
+city:String,
+state:String,
+zip:String,
+phone:String,
+monthly_donation:Object}
+	));
 
-app.get('/', (req, res) => {
+var stores = mongoose.model('store');
+temp_store = stores.find({ceres_id: '1608680'}, function(err, data) { console.log(err, data[0].monthly_donation.test); });
+
+
+// mongoose.find().distinct('banner', function(error, ids) {
+//     // ids is an array of all ObjectIds
+//     console.log(ids)
+// });
+
+// app.get('/', (req, res) => {
 	
-	con.query('SELECT DISTINCT banner FROM stores', (err,stores) => {
-		if(err) throw err;
+// 	con.query('SELECT DISTINCT banner FROM stores', (err,stores) => {
+// 		if(err) throw err;
 
-  		console.log('Data received from Db:');
-  		console.log(stores);
-  		res.render("home", {renderList: stores});
-	});
+//   		console.log('Data received from Db:');
+//   		console.log(stores);
+//   		res.render("home", {renderList: stores});
+// 	});
 
 
 
-});
+// });
 
 // app.get('/', (req, res) => {
 	
