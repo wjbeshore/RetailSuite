@@ -21,7 +21,7 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 mongoose.connect(uri, {useNewUrlParser: true});
 
-
+// 04/2019
 
 mongoose.model('store', new Schema(
 {ceres_id:String,
@@ -35,7 +35,14 @@ monthly_donation:Object}
 	));
 
 var stores = mongoose.model('store');
-stores.find().distinct('banner', function(err, data) { console.log(err, data[2])});
+// stores.find().distinct('banner', function(err, data) { console.log(err, data[2])});
+var d = new Date();
+var month = d.getMonth()+1;
+var year = d.getFullYear();
+
+console.log(month + "/" + year);
+let index_of_dates = dateIndex(month, year);
+
 
 
 
@@ -64,7 +71,17 @@ app.get('/banner/store/:id', (req, res) => {
     console.log(storereturn)
 
 
+    stores.find({ 'street': storereturn }, function (err, data) {
+  		if (err) return handleError(err);
+  		console.log(data);
+  		index_of_dates.forEach(item => {
+  			console.log(data[0]["monthly_donation"][item]);
+  		})
 
+
+
+  		// res.render("stores", {renderList: data});
+	});
 
 
 //     con.query('SELECT * FROM stores s LEFT JOIN donation d ON d.ceres_id = s.ceres_id WHERE s.street = ' + '"' + storereturn + '"' + "ORDER BY d.month DESC LIMIT 12", (err,stores) => {
@@ -97,3 +114,27 @@ app.get('/banner/store/:id', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 });
+
+
+function dateIndex(m, y) {
+  let return_arr = [];
+  let month_iter = m;
+  let year_iter = y;
+  for(let n = 0; n < 12; n++){
+  	
+  	if(month_iter == 1){
+  		month_iter = 12;
+  		year_iter = year_iter - 1;
+  	} else {
+  		month_iter -= 1;
+  	}
+  	if(month_iter < 10){
+  		return_arr.push("0" + month_iter + "/" + year_iter);
+  	} else {
+  		return_arr.push(month_iter + "/" + year_iter);
+  	}
+  	
+  }
+  return return_arr;
+
+};
