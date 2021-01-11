@@ -1,8 +1,8 @@
 
 const express = require('express')
 const app = express()
-const port = 3000
-const https = require('https')
+// const port = 3000
+const https = require('https');
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -70,18 +70,44 @@ app.get('/banner/store/:id', (req, res) => {
     let storereturn = req.params.id;
     console.log(storereturn)
 
-
+    let return_arr = [];
     stores.find({ 'street': storereturn }, function (err, data) {
   		if (err) return handleError(err);
-  		console.log(data);
+  		// console.log(data);
+  		
+
   		index_of_dates.forEach(item => {
-  			console.log(data[0]["monthly_donation"][item]);
+  			let return_sum = 0;
+  			//item = { date: '01/2020',
+  			// 'RETAIL, PRODUCE': 3381,
+  			// 'RETAIL, MEAT AND DELI': 164,
+  			// 'RETAIL, MIX FOOD': 559,
+  			// 'RETAIL, DAIRY': 27 }
+  			if(data[0]["monthly_donation"][item] && data[0]["monthly_donation"][item] != []){
+  			console.log(data[0]["monthly_donation"][item])
+  		
+  			for(const [key, value] of Object.entries(data[0]["monthly_donation"][item])) {
+  				if(key != 'date' && value != undefined){
+  					return_sum += value;
+  				}
+  				
+  				
+  			}
+  			return_arr.unshift(return_sum);
+	  		}
+
+
+
+
+  			console.log(return_arr);
   		})
 
 
-
-  		// res.render("stores", {renderList: data});
+  		res.render("store_stats", {renderList: return_arr, address: storereturn});
+  		
 	});
+    
+});
 
 
 //     con.query('SELECT * FROM stores s LEFT JOIN donation d ON d.ceres_id = s.ceres_id WHERE s.street = ' + '"' + storereturn + '"' + "ORDER BY d.month DESC LIMIT 12", (err,stores) => {
@@ -103,17 +129,14 @@ app.get('/banner/store/:id', (req, res) => {
 //   		});
 //   		console.log(new_arr);
 //   		console.log(stores);
-//   		res.render("store_stats", {renderList: new_arr, address: storereturn});
+//   		
 // 	});
     
-    
-});
 
 
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-});
+
+app.listen(process.env.PORT || 5000);
 
 
 function dateIndex(m, y) {
