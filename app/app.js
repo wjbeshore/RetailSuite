@@ -4,24 +4,18 @@ const app = express()
 // const port = 3000
 const https = require('https');
 const bodyParser = require("body-parser");
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + '/public'));
-
 app.set('view engine', 'ejs');
 
 
 
-//Connecting MongoDB to app now.
-
+//Connecting MongoDB
 const uri = "mongodb+srv://will:xo52eg15@cluster0.vlxnz.mongodb.net/retail?retryWrites=true&w=majority";
-
-
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 mongoose.connect(uri, {useNewUrlParser: true});
 
-// 04/2019
 
 mongoose.model('store', new Schema(
 {ceres_id:String,
@@ -35,54 +29,59 @@ monthly_donation:Object}
 	));
 
 var stores = mongoose.model('store');
-// stores.find().distinct('banner', function(err, data) { console.log(err, data[2])});
+
+//Creates date index used to create graphs
 var d = new Date();
 var month = d.getMonth()+1;
 var year = d.getFullYear();
 
-console.log(month + "/" + year);
 let index_of_dates = dateIndex(month, year);
 
 
 
-
+//initial route
 app.get('/', (req, res) => {
+
+  //pulls all unique banners from DB
 	stores.find().distinct('banner', function(err, data) { 
 
+    //passes array through to home page
 		res.render("home", {renderList: data});
-		console.log(err, data)}); 		
+				
 	});
 
 
+//route for banner home page
 app.get('/banner/:id', (req, res) => {
+    
     let bannerreturn = req.params.id;
 
+    //uses banner to pull all locations from DB and passes through to banner page.
 
-
-
-	stores.find({ 'banner': bannerreturn },"street", function (err, data) {
+    stores.find({ 'banner': bannerreturn },"street", function (err, data) {
   		if (err) return handleError(err);
   		res.render("stores", {renderList: data});
 	});
 });
 
+
+//route for individual store page
 app.get('/banner/store/:id', (req, res) => {
+
+    //passes store address
     let storereturn = req.params.id;
-    console.log(storereturn)
+    
+    //uses store address to pull donation information for previous 12 months
+    //puts that information into array to pass through to individual store page to visualize
 
     let return_arr = [];
     stores.find({ 'street': storereturn }, function (err, data) {
   		if (err) return handleError(err);
-  		// console.log(data);
   		
 
   		index_of_dates.forEach(item => {
   			let return_sum = 0;
-  			//item = { date: '01/2020',
-  			// 'RETAIL, PRODUCE': 3381,
-  			// 'RETAIL, MEAT AND DELI': 164,
-  			// 'RETAIL, MIX FOOD': 559,
-  			// 'RETAIL, DAIRY': 27 }
+
   			if(data[0]["monthly_donation"][item] && data[0]["monthly_donation"][item] != []){
   			console.log(data[0]["monthly_donation"][item])
   		
@@ -108,29 +107,6 @@ app.get('/banner/store/:id', (req, res) => {
 	});
     
 });
-
-
-//     con.query('SELECT * FROM stores s LEFT JOIN donation d ON d.ceres_id = s.ceres_id WHERE s.street = ' + '"' + storereturn + '"' + "ORDER BY d.month DESC LIMIT 12", (err,stores) => {
-// 		if(err) throw err;
-
-//   		console.log('Data received from Db:');
-//   		let new_arr = [];
-//   		stores.forEach((element) => {
-//   			let arrSum = 0;
-//   			arrSum += element.mix;
-//   			arrSum += element.dairy;
-//   			arrSum += element.meat;
-//   			arrSum += element.produce;
-//   			arrSum += element.nonfood;
-//   			// let tempArr = [element.month, arrSum];
-//   			new_arr.unshift(arrSum)
-
-
-//   		});
-//   		console.log(new_arr);
-//   		console.log(stores);
-//   		
-// 	});
     
 
 
