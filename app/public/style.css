@@ -1,5 +1,5 @@
 body, html {
-	
+	font-family: 'Asap', sans-serif;
 }
 
 body {
@@ -16,6 +16,11 @@ body {
 a {
 	color: #f2f1e7;
 	font-size: 2.5rem;
+	text-decoration: none;
+}
+
+a:hover{
+	color: #152238;
 }
 
 h1 {
@@ -36,3 +41,8 @@ h4 {
 	padding-top: 50px;
 	margin-bottom: 100px;
 }
+
+li {
+	list-style-type: none;
+}
+
