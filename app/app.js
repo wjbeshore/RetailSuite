@@ -1,7 +1,7 @@
 
 const express = require('express')
 const app = express()
-// const port = 3000
+const port = 3000
 const https = require('https');
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
@@ -49,6 +49,7 @@ app.get('/', (req, res) => {
 		res.render("home", {renderList: data});
 				
 	});
+});
 
 
 //route for banner home page
@@ -112,7 +113,6 @@ app.get('/banner/store/:id', (req, res) => {
 
 
 
-app.listen(process.env.PORT || 5000);
 
 
 function dateIndex(m, y) {
@@ -137,3 +137,9 @@ function dateIndex(m, y) {
   return return_arr;
 
 };
+
+// app.listen(process.env.PORT || 5000);
+
+app.listen(port, () => {
+	console.log(`Example app listening at http://localhost:${port}`)
+  });
