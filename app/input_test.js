@@ -40,7 +40,27 @@ var parser = parse(function (err, records) {
     })
     
         
-    console.log(stores);
+
+
+
+    let store_totals = {};
+    Object.keys(stores).forEach(function(key) {
+        store_totals[key] = {
+               "date": date
+               }
+        stores[key].forEach(row => {
+            let category = row[1];
+            if(store_totals[key].hasOwnProperty(category)){
+                store_totals[key][category] += row[3];
+            } else {
+                store_totals[key][category] = row[3];
+            }
+        })
+        console.log(store_totals);
+
+
+
+    });
 });
 
 fs.createReadStream('Apr19.csv').pipe(parser);
