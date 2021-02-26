@@ -2,6 +2,28 @@ const parse = require('csv-parse');
 const fs = require('fs');
 var stringify = require('csv-stringify');
 
+const uri = "mongodb+srv://will:xo52eg15@cluster0.vlxnz.mongodb.net/retail?retryWrites=true&w=majority";
+const mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+mongoose.connect(uri, {useNewUrlParser: true});
+
+
+mongoose.model('store', new Schema(
+{ceres_id:String,
+banner:String,
+street:String,
+city:String,
+state:String,
+zip:String,
+phone:String,
+monthly_donation:Object}
+	));
+
+
+var Store = mongoose.model('store');
+var datekey = "monthly_donation.";
+let date = "";
+
 
 var parser = parse(function (err, records) {
     let temp_arr = [];
@@ -10,7 +32,8 @@ var parser = parse(function (err, records) {
     let stores = {};
     temp_arr = temp_arr.slice(11);
     temp_arr = temp_arr.slice(0,-3);
-    let date = temp_arr[1][5];
+    date = temp_arr[1][5];
+    datekey = datekey + date;
     let current_store = "";
     temp_arr.forEach(item => {
         // console.log(item);
@@ -36,6 +59,7 @@ var parser = parse(function (err, records) {
                 
 
             }
+            
         
     })
     
@@ -56,11 +80,25 @@ var parser = parse(function (err, records) {
                 store_totals[key][category] = row[3];
             }
         })
-        console.log(store_totals);
+        
+        Object.keys(store_totals).forEach(function(key) {
+        console.log(datekey);
+        Store.updateOne({ceres_id:key}, {$set: {"monthly_donation.4/19" : store_totals[key]}}, function(
+            err,
+            result
+          ) {
+            if (err) {
+              console.log(err);
+            } else {
+              console.log(result);
+            }
+          });
+
 
 
 
     });
+});
 });
 
 fs.createReadStream('Apr19.csv').pipe(parser);
