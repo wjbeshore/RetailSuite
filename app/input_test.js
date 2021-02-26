@@ -82,8 +82,9 @@ var parser = parse(function (err, records) {
         })
         
         Object.keys(store_totals).forEach(function(key) {
+        let queryParam = {("monthly_donation." + date) : store_totals[key]};
         console.log(datekey);
-        Store.updateOne({ceres_id:key}, {$set: {"monthly_donation.4/19" : store_totals[key]}}, function(
+        Store.updateOne({ceres_id:key}, {$set: {queryParam}}, function(
             err,
             result
           ) {
