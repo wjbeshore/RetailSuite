@@ -32,7 +32,7 @@ for each in result:
 	store_dict["state"] = each[4]
 	store_dict["zip"] = each[5]
 	store_dict["phone"] = each[6]
-	store_dict["monthly_donation"] = {}
+	store_dict["monthly_donation"] = []
 	store_list.append(store_dict)
 
 

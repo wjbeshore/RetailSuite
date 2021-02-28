@@ -20,7 +20,7 @@ monthly_donation:Object}
 	));
 
 
-var Store = mongoose.model('store');
+var store = mongoose.model('store');
 var datekey = "monthly_donation.";
 let date = "";
 
@@ -82,9 +82,9 @@ var parser = parse(function (err, records) {
         })
         
         Object.keys(store_totals).forEach(function(key) {
-        let queryParam = {("monthly_donation." + date) : store_totals[key]};
+        let queryU = {$push: {"monthly_donation": store_totals[key]}};
         console.log(datekey);
-        Store.updateOne({ceres_id:key}, {$set: {queryParam}}, function(
+        store.updateOne({ceres_id:key}, {$push: {"monthly_donation": store_totals[key]}}, function(
             err,
             result
           ) {
