@@ -51,6 +51,17 @@ app.get('/', (req, res) => {
 	});
 });
 
+//initial route
+app.get('/upload', (req, res) => {
+
+	//pulls all unique banners from DB
+	  
+  
+	  //passes array through to home page
+		  res.render("upload.html");
+			
+  });
+
 
 //route for banner home page
 app.get('/banner/:id', (req, res) => {
