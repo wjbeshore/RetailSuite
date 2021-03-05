@@ -58,9 +58,20 @@ app.get('/upload', (req, res) => {
 	  
   
 	  //passes array through to home page
-		  res.render("upload.html");
+	res.render("upload");
 			
   });
+
+  app.post('/upload', function(req, res) {
+	console.log(req.body.upload_file); // the uploaded file object
+	stores.find().distinct('banner', function(err, data) { 
+
+		//passes array through to home page
+			res.render("home", {renderList: data});
+  });
+});
+
+
 
 
 //route for banner home page
