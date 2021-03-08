@@ -67,7 +67,7 @@ app.get('/upload', (req, res) => {
   app.post('/upload', function(req, res) {
 	console.log(req.body); // the uploaded file object
 	let file_to_upload = req.body.upload_file;
-
+	uploadFile(file_to_upload);
 	stores.find().distinct('banner', function(err, data) { 
 
 		//passes array through to home page
@@ -180,7 +180,7 @@ app.listen(port, () => {
 		let temp_arr = [];
 		// console.log(records[40]);
 		records.forEach(element => (temp_arr.push(element.filter(item => item != ""))));
-		let stores = {};
+		let storesDictionary = {};
 		temp_arr = temp_arr.slice(11);
 		temp_arr = temp_arr.slice(0,-3);
 		date = temp_arr[1][5];
@@ -192,19 +192,19 @@ app.listen(port, () => {
 				current_store = "";
 			} else if((isNaN(item[1])) && (item[1] != "RETAIL") ){
 				current_store = parseInt(item[0])
-				stores[current_store] = [];
+				storesDictionary[current_store] = [];
 			} else{
 				if(item[8] == '12/31/9999'){
 					
 					let pounds = item[9];
 					pounds = pounds.slice(0,-1);
-					stores[current_store].push([item[5], item[2], item[4], parseFloat(pounds)])
+					storesDictionary[current_store].push([item[5], item[2], item[4], parseFloat(pounds)])
 					
 				} else {
 					
 					let pounds = item[8];
 					pounds = pounds.slice(0,-1);
-					stores[current_store].push([item[5], item[2], item[4], parseFloat(pounds)])
+					storesDictionary[current_store].push([item[5], item[2], item[4], parseFloat(pounds)])
 					
 				}
 					
@@ -219,11 +219,11 @@ app.listen(port, () => {
 	
 	
 		let store_totals = {};
-		Object.keys(stores).forEach(function(key) {
+		Object.keys(storesDictionary).forEach(function(key) {
 			store_totals[key] = {
 				   "date": date
 				   }
-			stores[key].forEach(row => {
+			storesDictionary[key].forEach(row => {
 				let category = row[1];
 				if(store_totals[key].hasOwnProperty(category)){
 					store_totals[key][category] += row[3];
@@ -235,7 +235,7 @@ app.listen(port, () => {
 			Object.keys(store_totals).forEach(function(key) {
 			let queryU = {$push: {"monthly_donation": store_totals[key]}};
 			console.log(datekey);
-			store.updateOne({ceres_id:key}, {$push: {"monthly_donation": store_totals[key]}}, function(
+			stores.updateOne({ceres_id:key}, {$push: {"monthly_donation": store_totals[key]}}, function(
 				err,
 				result
 			  ) {
