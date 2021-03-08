@@ -9,6 +9,8 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 const parse = require('csv-parse');
 const fs = require('fs');
+const multer = require('multer');
+var upload = multer({dest:'uploads/'});
 
 
 
@@ -64,7 +66,7 @@ app.get('/upload', (req, res) => {
 			
   });
 
-  app.post('/upload', function(req, res) {
+  app.post('/upload', upload.single('month'), function(req, res) {
 	console.log(req.body); // the uploaded file object
 	let file_to_upload = req.body.upload_file;
 	uploadFile(file_to_upload);
@@ -73,6 +75,7 @@ app.get('/upload', (req, res) => {
 		//passes array through to home page
 			res.render("home", {renderList: data});
   });
+
 });
 
 
@@ -247,13 +250,11 @@ app.listen(port, () => {
 			  });
 	
 	
-	
-	
 		});
 	});
 	});
 	
-	fs.createReadStream('Apr19.csv').pipe(parser);
+	fs.createReadStream(file).pipe(parser);
 
 
   }
