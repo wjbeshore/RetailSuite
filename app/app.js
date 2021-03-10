@@ -66,10 +66,17 @@ app.get('/upload', (req, res) => {
 			
   });
 
-  app.post('/upload', upload.single('month'), function(req, res) {
-	console.log(req.body); // the uploaded file object
-	let file_to_upload = req.body.upload_file;
-	uploadFile(file_to_upload);
+  app.post('/upload', upload.single('upload_file'), function(req, res) {
+	// try {
+	// 	res.send(req.file);
+	//   }catch(err) {
+	// 	res.send(400);
+	//   }
+	// });
+
+		console.log(req.file); // the uploaded file object
+	
+	uploadFile(req.file.path);
 	stores.find().distinct('banner', function(err, data) { 
 
 		//passes array through to home page
